@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foursquare OAuth Redirect</title>
+</head>
+<body>
+    <h1>OAuth Authorization Successful</h1>
+    <p id="auth-code">Processing your authorization code...</p>
+    <div id="check-ins"></div>
+    
+    <script>
+        // Capture the authorization code from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const authorizationCode = urlParams.get('code');
+
+        if (authorizationCode) {
+            document.getElementById('auth-code').innerHTML = "Authorization Code: " + authorizationCode;
+            
+            // Exchange the authorization code for an access token
+            const tokenUrl = `https://foursquare.com/oauth2/access_token?client_id=JCW4TTCGUCWCXPUR5M1N24HQAU3MUCHHEMJLAHVGLBBH1ILU&client_secret=YPSQMLFM5KC3KHFMVHDH2R0GMOHH0NUVAAAMKEAP3MPJUGBT&grant_type=authorization_code&redirect_uri=https://joud73.github.io/POI/&code=${authorizationCode}`;
+            
+            fetch(tokenUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const accessToken = data.access_token;
+                    if (accessToken) {
+                        document.getElementById('auth-code').innerHTML += "<br>Access Token: " + accessToken;
+                        fetchCheckIns(accessToken);
+                    } else {
+                        document.getElementById('check-ins').innerHTML = "Failed to get access token.";
+                    }
+                })
+                .catch(error => console.error('Error exchanging code:', error));
+        } else {
+            document.getElementById('auth-code').innerHTML = "Authorization code not found in the URL.";
+        }
+
+        // Function to fetch check-ins using the access token
+        function fetchCheckIns(accessToken) {
+            const checkInUrl = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=" + accessToken + "&v=20230930";
+            
+            fetch(checkInUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const checkIns = data.response.checkins.items;
+                    let checkInsHtml = "<h2>Your Check-ins:</h2><ul>";
+                    checkIns.forEach(checkIn => {
+                        checkInsHtml += `<li>${checkIn.venue.name} at ${checkIn.venue.location.address}</li>`;
+                    });
+                    checkInsHtml += "</ul>";
+                    document.getElementById('check-ins').innerHTML = checkInsHtml;
+                })
+                .catch(error => console.error('Error fetching check-ins:', error));
+        }
+    </script>
+</body>
+</html>
