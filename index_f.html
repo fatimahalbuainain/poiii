@@ -19,7 +19,7 @@
             document.getElementById('auth-code').innerHTML = "Authorization Code: " + authorizationCode;
             
             // Exchange the authorization code for an access token
-            const tokenUrl = `https://foursquare.com/oauth2/access_token?client_id=JCW4TTCGUCWCXPUR5M1N24HQAU3MUCHHEMJLAHVGLBBH1ILU&client_secret=YPSQMLFM5KC3KHFMVHDH2R0GMOHH0NUVAAAMKEAP3MPJUGBT&grant_type=authorization_code&redirect_uri=https://joud73.github.io/POI/&code=${authorizationCode}`;
+            const tokenUrl = `https://foursquare.com/oauth2/access_token?client_id=KVHXSHLBHWDJCPIBPD0B40QE5ZEABDTMCYMJQTAXQ4VQA5PQ&client_secret=4GPPXUEO3HQVS31P1CXQE5LAZ14TA0FGQFBYWREH4JOTS3OE&grant_type=authorization_code&redirect_uri=https://fatimahalbuainain.github.io/poi/&code=${authorizationCode}`;
             
             fetch(tokenUrl)
                 .then(response => response.json())
